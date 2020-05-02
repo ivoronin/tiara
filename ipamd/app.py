@@ -5,6 +5,7 @@ from ipamd.db import db
 from ipamd import ipam
 from ipamd import health
 
+
 def create_app():  # pylint: disable=C0116
     app = Flask(__name__)
 
