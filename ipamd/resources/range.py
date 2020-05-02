@@ -13,7 +13,7 @@ class RangeArgumentParser(reqparse.RequestParser):
         self.add_argument('stop', type=lambda a: IPAddress(a), location='json', required=True)  # pylint: disable=W0108
 
 
-def validate_range(network, range_):
+def validate_range(network: models.Network, range_: models.Range):
     # Sanity checks
     if range_.start > range_.stop:
         raise BadRequest(f"{range_.start} is greater than {range_.stop}")
@@ -37,11 +37,11 @@ def validate_range(network, range_):
 
 class RangeList(IPAMResource):
     @marshal_with(models.Range.marshal_fields)
-    def get(self, network_id):  # pylint: disable=R0201
+    def get(self, network_id: int):  # pylint: disable=R0201
         return models.Range.query.filter_by(network_id=network_id).all()
 
     @marshal_with(models.Range.marshal_fields)
-    def post(self, network_id):  # pylint: disable=R0201
+    def post(self, network_id: int):  # pylint: disable=R0201
         network = models.Network.query.get_or_404(network_id)
         args = RangeArgumentParser().parse_args()
         range_ = models.Range(network=network, start=args['start'], stop=args['stop'])
@@ -53,12 +53,12 @@ class RangeList(IPAMResource):
 
 class Range(IPAMResource):
     @marshal_with(models.Range.marshal_fields)
-    def get(self, network_id, range_id):  # pylint: disable=R0201
+    def get(self, network_id: int, range_id: int):  # pylint: disable=R0201
         range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first_or_404()
         return range_
 
     @marshal_with(models.Range.marshal_fields)
-    def put(self, network_id, range_id):  # pylint: disable=R0201
+    def put(self, network_id: int, range_id: int):  # pylint: disable=R0201
         network = models.Network.query.get_or_404(network_id)
         range_ = models.Range.query.filter_by(id=range_id, network=network).first_or_404()
         args = RangeArgumentParser().parse_args()
@@ -68,7 +68,7 @@ class Range(IPAMResource):
         db.session.commit()  # pylint: disable=E1101
         return range_
 
-    def delete(self, network_id, range_id):  # pylint: disable=R0201
+    def delete(self, network_id: int, range_id: int):  # pylint: disable=R0201
         range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first_or_404()
         db.session.delete(range_)  # pylint: disable=E1101
         db.session.commit()  # pylint: disable=E1101

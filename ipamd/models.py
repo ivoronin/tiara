@@ -8,12 +8,12 @@ from ipamd.db import db
 class IPAddressType(db.TypeDecorator):
     impl = db.String(64)
 
-    def process_bind_param(self, value, dialect):  # pylint: disable=W0613,R0201
+    def process_bind_param(self, value: IPAddress, dialect):  # pylint: disable=W0613,R0201
         if value is not None:
             return str(value)
         return value
 
-    def process_result_value(self, value, dialect):  # pylint: disable=W0613,R0201
+    def process_result_value(self, value: str, dialect):  # pylint: disable=W0613,R0201
         if value is not None:
             return IPAddress(value)
         return value
@@ -22,12 +22,12 @@ class IPAddressType(db.TypeDecorator):
 class IPNetworkType(db.TypeDecorator):
     impl = db.String(64)
 
-    def process_bind_param(self, value, dialect):  # pylint: disable=W0613,R0201
+    def process_bind_param(self, value: IPNetwork, dialect):  # pylint: disable=W0613,R0201
         if value is not None:
             return str(value)
         return value
 
-    def process_result_value(self, value, dialect):  # pylint: disable=W0613,R0201
+    def process_result_value(self, value: str, dialect):  # pylint: disable=W0613,R0201
         if value is not None:
             return IPNetwork(value)
         return value
@@ -44,7 +44,7 @@ class Network(db.Model):  # pylint: disable=R0903
     ranges = db.relationship('Range', backref=db.backref('network'), cascade="all, delete-orphan")
 
     @db.validates('address')
-    def validate_address(self, key, value):  # pylint: disable=W0613,R0201
+    def validate_address(self, key: str, value: IPNetwork):  # pylint: disable=W0613,R0201
         assert type(value) is IPNetwork  # pylint: disable=C0123
         return value
 
@@ -71,7 +71,7 @@ class Range(db.Model):  # pylint: disable=R0903
         return IPRange(self.start, self.stop)
 
     @db.validates('start', 'stop')
-    def validate_address(self, key, value):  # pylint: disable=W0613,R0201
+    def validate_address(self, key: str, value: IPAddress):  # pylint: disable=W0613,R0201
         assert type(value) is IPAddress  # pylint: disable=C0123
         return value
 
@@ -93,6 +93,6 @@ class Address(db.Model):  # pylint: disable=R0903
     address = db.Column(IPAddressType, nullable=False, unique=True)
 
     @db.validates('address')
-    def validate_address(self, key, value):  # pylint: disable=W0613,R0201
+    def validate_address(self, key: str, value: IPAddress):  # pylint: disable=W0613,R0201
         assert type(value) is IPAddress  # pylint: disable=C0123
         return value

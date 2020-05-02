@@ -13,7 +13,7 @@ class NetworkArgumentParser(reqparse.RequestParser):
         self.add_argument('address', type=lambda n: IPNetwork(n), location='json', required=True)  # pylint: disable=W0108
 
 
-def validate_network(network):
+def validate_network(network: models.Network):
     networks = models.Network.query.with_for_update().all()
     for other in networks:
         # Object is being updated
@@ -42,12 +42,12 @@ class NetworkList(IPAMResource):
 
 class Network(IPAMResource):
     @marshal_with(models.Network.marshal_fields)
-    def get(self, network_id):  # pylint: disable=R0201
+    def get(self, network_id: int):  # pylint: disable=R0201
         network = models.Network.query.filter_by(id=network_id).first_or_404()
         return network
 
     @marshal_with(models.Network.marshal_fields)
-    def put(self, network_id):  # pylint: disable=R0201
+    def put(self, network_id: int):  # pylint: disable=R0201
         network = models.Network.query.filter_by(id=network_id).first_or_404()
         args = NetworkArgumentParser().parse_args()
         network.address = args['address']

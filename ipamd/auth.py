@@ -5,7 +5,7 @@ auth = HTTPBasicAuth()  # pylint: disable=C0103
 
 
 @auth.verify_password
-def verify_password(username, password):
+def verify_password(username: str, password: str):
     """Called by flask_httpauth"""
     if username == app.config['USERNAME']:
         return password == app.config['PASSWORD']
