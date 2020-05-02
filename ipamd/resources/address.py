@@ -42,6 +42,7 @@ class Address(IPAMResource):
         db.session.delete(address)  # pylint: disable=E1101
         db.session.commit()  # pylint: disable=E1101
 
+    @marshal_with(models.Address.marshal_fields)
     def put(self, network_id: int, range_id: int, address_id: int):  # pylint: disable=R0201,W0613
         address = models.Address.query.filter_by(id=address_id, range_id=range_id).first_or_404()
         args = AddressRequestParser().parse_args()
