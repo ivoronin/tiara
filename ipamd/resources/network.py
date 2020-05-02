@@ -1,4 +1,4 @@
-from flask_restful import abort, marshal_with, reqparse
+from flask_restful import marshal_with, reqparse
 from netaddr import IPNetwork
 from werkzeug.exceptions import BadRequest
 from ipamd.db import db
@@ -43,16 +43,12 @@ class NetworkList(IPAMResource):
 class Network(IPAMResource):
     @marshal_with(models.Network.marshal_fields)
     def get(self, network_id):  # pylint: disable=R0201
-        network = models.Network.query.filter_by(id=network_id).first()
-        if not network:
-            abort(404)
+        network = models.Network.query.filter_by(id=network_id).first_or_404()
         return network
 
     @marshal_with(models.Network.marshal_fields)
     def put(self, network_id):  # pylint: disable=R0201
-        network = models.Network.query.filter_by(id=network_id).first()
-        if not network:
-            abort(404)
+        network = models.Network.query.filter_by(id=network_id).first_or_404()
         args = NetworkArgumentParser().parse_args()
         network.address = args['address']
         validate_network(network)
@@ -60,8 +56,6 @@ class Network(IPAMResource):
         return network
 
     def delete(self, network_id: int):  # pylint: disable=R0201
-        network = models.Network.query.filter_by(id=network_id).first()
-        if not network:
-            abort(404)
+        network = models.Network.query.filter_by(id=network_id).first_or_404()
         db.session.delete(network)  # pylint: disable=E1101
         db.session.commit()  # pylint: disable=E1101

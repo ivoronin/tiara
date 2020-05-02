@@ -1,4 +1,4 @@
-from flask_restful import marshal_with, reqparse, abort
+from flask_restful import marshal_with, reqparse
 from netaddr import IPAddress
 from werkzeug.exceptions import BadRequest
 from ipamd.db import db
@@ -54,17 +54,13 @@ class RangeList(IPAMResource):
 class Range(IPAMResource):
     @marshal_with(models.Range.marshal_fields)
     def get(self, network_id, range_id):  # pylint: disable=R0201
-        range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first()
-        if not range_:
-            abort(404)
+        range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first_or_404()
         return range_
 
     @marshal_with(models.Range.marshal_fields)
     def put(self, network_id, range_id):  # pylint: disable=R0201
         network = models.Network.query.get_or_404(network_id)
-        range_ = models.Range.query.filter_by(id=range_id, network=network).first()
-        if not range_:
-            abort(404)
+        range_ = models.Range.query.filter_by(id=range_id, network=network).first_or_404()
         args = RangeArgumentParser().parse_args()
         range_.start = args['start']
         range_.stop = args['stop']
@@ -73,8 +69,6 @@ class Range(IPAMResource):
         return range_
 
     def delete(self, network_id, range_id):  # pylint: disable=R0201
-        range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first()
-        if not range_:
-            abort(404)
+        range_ = models.Range.query.filter_by(id=range_id, network_id=network_id).first_or_404()
         db.session.delete(range_)  # pylint: disable=E1101
         db.session.commit()  # pylint: disable=E1101
