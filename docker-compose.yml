@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   ipamd:
-    image: ivoronin/ipamd:latest
+    image: ivoronin/tiara:latest
     build:
       context: .
     ports:
