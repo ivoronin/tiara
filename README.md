@@ -16,6 +16,7 @@ PostgreSQL and MySQL are supported too. Check SQLAlchemy docs for the connection
 
 ## Terraform example
 This example uses [REST API provider](https://github.com/Mastercard/terraform-provider-restapi/).
+Please also see `examples/vsphere-tf` for complete example of using Tiara together with Terraform in vSphere environment.
 
 ```terraform
 provider "restapi" {
