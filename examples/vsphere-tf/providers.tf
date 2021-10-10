@@ -1,5 +1,5 @@
 provider "restapi" {
-  uri                   = "http://10.0.1.11:9000"
+  uri                   = "http://127.0.0.1:8000"
   username              = "ipam"
   password              = "ipam"
   write_returns_object  = true
